@@ -1,0 +1,9 @@
+*~
+*.lst
+*.hex
+*.bin
+*.adf
+*.ihx
+*.hashes
+*.cdb
+build/*
