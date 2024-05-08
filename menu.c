@@ -6,6 +6,7 @@
 #include "ram_programs.h"
 #include "settings_programs.h"
 #include "uart.h"
+#include "timer.h"
 
 #define MAIN_MENU_COUNT 3
 #define PROGRAM_COUNT 6
@@ -41,6 +42,7 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
     while (1) {
         // Wait for valid input
         do {
+            while (!has10msElapsed());
             // Key and UART
             keyInput = uart_receive();
             if (keyInput == 0xFF) {
@@ -64,7 +66,7 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
         setTextSize(2);
 
         // If key pressed
-        if (keyInput != 0x10) {
+        if (keyInput != 0xFF) {
             return keyInput;
         }
 

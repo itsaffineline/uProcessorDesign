@@ -44,6 +44,18 @@ void settings_set_time_auto(void) {
 }
 
 void settings_wifi(void) {
-
+    uint8_t count = 0;
+    uint8_t key;
+    menuTitle("WiFi Settings");
+    do {
+        key = inputGetKeyBlocking();
+        printNibbleHexadecimal(key);
+        count++;
+        if (count == 20) {
+            count = 0;
+            printChar('\n');
+        }
+    } while (1);
+    return;
 }
 
