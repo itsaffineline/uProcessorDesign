@@ -79,7 +79,7 @@ void prog_ram_dump(void) {
                 break;
             // go right
             case 0xE:
-                if ((uint16_t)currentAddress + bytesPerPage < endAddress) {
+                if ((uint16_t)currentAddress < endAddress - bytesPerPage) {
                     currentAddress += bytesPerPage;
                 } else {
                     menuPrintAndWait("\nAddress Overflow");
