@@ -64,7 +64,7 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
         setTextSize(2);
 
         // If key pressed
-        if (keyInput != 0x10) {
+        if (keyInput != 0xFF) {
             return keyInput;
         }
 
