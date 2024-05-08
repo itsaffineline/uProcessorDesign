@@ -43,9 +43,7 @@ uint8_t inputGetKeyBlocking(void)
             key = inputGetKey();
         } else {
             // Convert from ascii to hex
-            key -= '0';
-            if (key > 9)
-                key -= 7;
+            key -= (key >= '9') ? 0x37 : 0x30;
         }
     } while (key == 0xFF);
     return key;
