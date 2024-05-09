@@ -1,6 +1,8 @@
 #include "input.h"
 #include "io.h"
 #include "uart.h"
+#include "rtc.h"
+#include "lcdDriver.h"
 
 __bit inputKeyPressed;
 uint8_t button;
@@ -16,6 +18,19 @@ uint8_t inputGetKey(void)
 		uint8_t colloc, rowloc, i = 0;
 		do
 		{
+            // RTC print
+            setCursor(215, 230);
+            setTextColor(GRAY, BLACK);
+            setTextSize(1);
+            rtcPrint();
+            // Escape for uart
+            colloc = uart_receive();
+            if (colloc != 0xFF) {
+                // Convert from ascii to hex
+                colloc -= (colloc >= '9') ? 0x37 : 0x30;
+                return colloc;
+            }
+            // Escape for NES
             if (inputGetNES() != 0x00) {
                 return 0xFF;
             }

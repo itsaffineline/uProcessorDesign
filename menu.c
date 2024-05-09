@@ -54,11 +54,6 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
             nesEdgeInput = ~nesInput;
             nesInput = inputGetNES();
             nesEdgeInput = nesEdgeInput & nesInput;
-            // RTC print
-            setCursor(215, 230);
-            setTextColor(GRAY, BLACK);
-            setTextSize(1);
-            rtcPrint();
         } while (keyInput > optionCount && nesEdgeInput == 0);
 
         // Set size back
