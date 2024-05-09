@@ -5,6 +5,7 @@
 #include "rtc.h"
 #include "ram_programs.h"
 #include "settings_programs.h"
+#include "games_programs.h"
 #include "uart.h"
 
 #define MAIN_MENU_COUNT 3
@@ -119,14 +120,17 @@ uint8_t mainMenu(void) {
                 }
                 break;
             case 2:
-                //selection = menuCreate("Games", games, GAMES_COUNT);
-                fillScreen();
-                uint8_t game;
-                do {
-                    game = inputGetNES();
-                    setCursor(40, 40);
-                    printByteHexadecimal(game);
-                } while ((game & 1) == 0);
+                while (selection != 0) {
+                selection = menuCreate("Games", games, GAMES_COUNT);
+                    switch (selection) {
+                        case 1:
+                            games_pong();
+                            break;
+                        case 2:
+                            games_snake();
+                            break;
+                    }
+                }
                 break;
             case 3:
                 while (selection != 0) {
