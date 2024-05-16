@@ -10,19 +10,23 @@ uint8_t button;
 __code uint8_t rawhex[] = {0x7D, 0xEE, 0xED, 0xEB, 0xDE, 0xDD, 0xDB, 0xBE, 0xBD, 0xBB, 0xE7, 0xD7, 0xB7, 0x77, 0x7B, 0x7E, 0x00};
 __code uint8_t segconvert[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F,  0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71};
 
-uint8_t inputGetKey(void)
+uint8_t inputGetKey(uint8_t rtc)
 {
     uint8_t decode = 0xFF;
 	while(1)
 	{
 		uint8_t colloc, rowloc, i = 0;
+        uint8_t nes = 0;
+        uint8_t oldnes = 0;
 		do
 		{
             // RTC print
-            setCursor(215, 230);
-            setTextColor(GRAY, BLACK);
-            setTextSize(1);
-            rtcPrint();
+            if (rtc) {
+                setCursor(215, 230);
+                setForegroundColor(GRAY);
+                setTextSize(1);
+                rtcPrint();
+            }
             // Escape for uart
             colloc = uart_receive();
             if (colloc != 0xFF) {
@@ -31,7 +35,9 @@ uint8_t inputGetKey(void)
                 return colloc;
             }
             // Escape for NES
-            if (inputGetNES() != 0x00) {
+            oldnes = ~nes;
+            nes = inputGetNES();
+            if (oldnes & nes != 0x00) {
                 return 0xFF;
             }
             P1 = 0xF0;
@@ -65,7 +71,7 @@ uint8_t inputGetKeyBlocking(void)
     do {
         key = uart_receive();
         if (key == 0xFF) {
-            key = inputGetKey();
+            key = inputGetKey(0);
         } else {
             // Convert from ascii to hex
             key -= (key >= '9') ? 0x37 : 0x30;

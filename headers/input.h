@@ -12,7 +12,7 @@
 #define NES_LEFT 0x40
 #define NES_RIGHT 0x80
 
-uint8_t inputGetKey(void);
+uint8_t inputGetKey(uint8_t rtc);
 
 uint8_t inputGetKeyBlocking(void);
 

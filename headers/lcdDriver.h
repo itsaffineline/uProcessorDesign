@@ -88,8 +88,6 @@ void setTextSize(uint8_t s);
 
 uint8_t getTextSize(void);
 
-void setTextColor(uint16_t x, uint16_t y);
-
 void printChar(char c);
 
 void print(char *str);
@@ -103,6 +101,10 @@ void printNibbleHexadecimal(uint8_t d);
 void printByteHexadecimal(uint8_t d);
 
 // Graphic functions
+void setForegroundColor(uint16_t color);
+
+void setBackgroundColor(uint16_t color);
+
 void drawPixel(uint16_t x3,uint16_t y3,uint16_t color1);
 
 void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);

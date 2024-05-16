@@ -1,6 +1,7 @@
 #include "settings_programs.h"
 #include "menu.h"
 #include "io.h"
+#include "input.h"
 #include "rtc.h"
 #include "lcdDriver.h"
 
@@ -11,12 +12,12 @@ void settings_set_time(void) {
     println("Input new time:");
 
     // Print placeholder time
-    setTextColor(GRAY, BLACK);
+    setForegroundColor(GRAY);
     setCursor(0, 40);
     rtcPrint();
 
     // Get inputs from user
-    setTextColor(WHITE, BLACK);
+    setForegroundColor(WHITE);
     setCursor(0, 40);
     // Get Date
     in1 = menuInputByteBCD();
@@ -44,6 +45,16 @@ void settings_set_time_auto(void) {
 }
 
 void settings_wifi(void) {
-
+    menuTitle("ADC Print");
+    setCursor(0, 200);
+    print("Press A on NES to exit");
+    uint8_t adc;
+    do {
+        setCursor(0, 40);
+        adc = ioread8((__xdata uint8_t*) ADC_ADDRESS);
+        printByteHexadecimal(adc);
+        adc = inputGetNES();
+    } while ((adc & 1) == 0);
+    return;
 }
 

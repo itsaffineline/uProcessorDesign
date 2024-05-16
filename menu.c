@@ -12,16 +12,17 @@
 #define PROGRAM_COUNT 6
 #define GAMES_COUNT 2
 #define SETTING_COUNT 3
+
 __code char* const mainMenuOptions[MAIN_MENU_COUNT] = {"(1) Memory Functions", "(2) Games", "(3) Settings"};
 __code char* const programs[PROGRAM_COUNT] = {"(1) Memory Dump", "(2) RAM Check", "(3) RAM Move", "(4) RAM Edit", "(5) RAM Find", "(6) RAM Count"};
 __code char* const games[GAMES_COUNT] = {"(1) Pong", "(2) Snake"};
-__code char* const settings[SETTING_COUNT] = {"(1) Set Time (Manual)", "(2) Set Time (Automatic)", "(3) WiFi"};
+__code char* const settings[SETTING_COUNT] = {"(1) Set Time (Manual)", "(2) Set Time (Automatic)", "(3) ADC Print"};
 
 uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCount) __reentrant {
     uint8_t i, selection = 0, keyInput, nesInput, nesEdgeInput;
     // Print title
     menuTitle(title);
-    setTextColor(GRAY, BLACK);
+    setForegroundColor(GRAY);
     setCursor(0, 40);
     println("(0) Back");
     // Init NES
@@ -31,9 +32,9 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
     for (i = 0; i < optionCount; i++) {
         // Update text color based on selection
         if (i == selection)
-            setTextColor(WHITE, BLACK);
+            setForegroundColor(WHITE);
         else
-            setTextColor(GRAY, BLACK);
+            setForegroundColor(GRAY);
         // Print program name
         setCursor(0, 60 + (i * 20));
         print(options[i]);
@@ -45,16 +46,14 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
             // Key and UART
             keyInput = uart_receive();
             if (keyInput == 0xFF) {
-                keyInput = inputGetKey();
+                keyInput = inputGetKey(1);
             } else {
                 // Convert from ascii to hex
                 keyInput -= (keyInput >= '9') ? 0x37 : 0x30;
             }
             // NES input
-            nesEdgeInput = ~nesInput;
             nesInput = inputGetNES();
-            nesEdgeInput = nesEdgeInput & nesInput;
-        } while (keyInput > optionCount && nesEdgeInput == 0);
+        } while (keyInput > optionCount && nesInput == 0);
 
         // Set size back
         setTextSize(2);
@@ -65,20 +64,20 @@ uint8_t menuCreate(__code char *title, __code char *options[], uint8_t optionCou
         }
 
         // NES
-        if (nesEdgeInput & NES_A) return selection + 1;
-        if (nesEdgeInput & NES_B) return 0;
+        if (nesInput & NES_A) return selection + 1;
+        if (nesInput & NES_B) return 0;
 
         // Rewrite old selection in gray
-        setTextColor(GRAY, BLACK);
+        setForegroundColor(GRAY);
         setCursor(0, 60 + (selection * 20));
         print(options[selection]);
 
         // NES Update selection
-        if (nesEdgeInput & NES_UP && selection > 0) selection--;
-        if (nesEdgeInput & NES_DOWN && selection < optionCount - 1) selection++;
+        if (nesInput & NES_UP && selection > 0) selection--;
+        if (nesInput & NES_DOWN && selection < optionCount - 1) selection++;
 
         // Rewrite new selection in white
-        setTextColor(WHITE, BLACK);
+        setForegroundColor(WHITE);
         setCursor(0, 60 + (selection * 20));
         print(options[selection]);
     }
@@ -148,7 +147,7 @@ uint8_t mainMenu(void) {
 }
 
 void menuTitle(char *title) {
-    setTextColor(WHITE, BLACK);
+    setForegroundColor(WHITE);
     fillScreen();
     setCursor(0,0);
     setTextSize(3);

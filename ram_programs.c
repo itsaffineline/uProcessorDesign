@@ -48,6 +48,9 @@ void prog_ram_dump(void) {
     // Setup tabulator
     menuTitle("RAM Dump");
     setTextSize(1);
+    setCursor(0, 220);
+    print("<F  0-Exit  E>");
+    setTextSize(1);
 
     // Start tabulation
     uint16_t endAddress = startAddress + (datatype * (blockSize - 1));
@@ -143,7 +146,7 @@ uint8_t _ram_check(uint8_t testByte) {
             return 1;
         }
         // Restore the original byte
-        *mem = backup;
+        // *mem = backup;
     } while (++mem != 0);
     return 0;
 }
@@ -154,7 +157,7 @@ void prog_ram_move(void) {
     uint16_t startAddress = menuPromptWord("Start Address");
     uint8_t datatype = menuPromptDatatype();
     uint16_t blockSize = menuPromptWord("Block Size");
-    uint16_t destinationAddress = menuPromptWord("Destination Address");
+    uint16_t destinationAddress = menuPromptWord("Destination");
     // Check for overflowing block size
     if (check_dptr_overflow(startAddress, datatype, blockSize)
             || check_dptr_overflow(destinationAddress, datatype, blockSize)) {
@@ -178,6 +181,11 @@ void prog_ram_edit(void) {
     uint16_t startAddress = menuPromptWord("Start Address");
     // Begin tabulation
     menuTitle("RAM Edit");
+    setTextSize(1);
+    setCursor(0, 220);
+    print("F-Edit  0-Exit  E>");
+    setTextSize(2);
+    setCursor(0, 25);
     __xdata uint8_t* loc = (__xdata uint8_t*)startAddress;
     while (true) {
         // Print the current data
@@ -228,6 +236,11 @@ void prog_ram_find(uint8_t count) {
     }
     // Page through the matches
     menuTitle("RAM Find");
+    setTextSize(1);
+    setCursor(0, 220);
+    print("<F  0-Exit  E>");
+    setTextSize(2);
+    setCursor(0, 25);
     blockSize = (uint16_t)currentAddress + blockSize - 1;
     currentAddress = _find_next(currentAddress, blockSize, tester);
     while (true) {

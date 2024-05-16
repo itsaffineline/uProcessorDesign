@@ -17,8 +17,8 @@ uint16_t cursor_y;
 uint8_t textsize;
 uint8_t rotation;
 /* text color and background */
-uint16_t textcolor;
-uint16_t textbgcolor;
+uint16_t foregroundColor;
+uint16_t backgroundColor;
 /* lcd width and height */
 uint16_t _width;
 uint16_t _height;
@@ -106,12 +106,13 @@ void lcdWriteRegData16(uint16_t a, uint16_t d){
     lcdWrite8Data(lo);
 }
 
-void setTextColor(uint16_t x, uint16_t y){
-    textcolor =  x;
-    textbgcolor = y;
+void setForegroundColor(uint16_t color) {
+    foregroundColor = color;
 }
 
-
+void setBackgroundColor(uint16_t color) {
+    backgroundColor = color;
+}
 
 void setTextSize(uint8_t s){
     if (s > 8) return;
@@ -291,8 +292,8 @@ void fillRect(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t color){
 void fillScreen(void){
     long len = 76800;
     int blocks = 1200;
-    uint8_t  i, hi =textbgcolor >> 8;
-    uint8_t lo = textbgcolor;
+    uint8_t  i, hi =backgroundColor >> 8;
+    uint8_t lo = backgroundColor;
     setAddress(0,0,_width-1,_height-1);
 
     lcdWrite8Reg(ILI9341_MEMORYWRITE);
@@ -318,8 +319,6 @@ void fillScreen(void){
 void drawChar(uint8_t c){
     int16_t x = cursor_x;
     int16_t y = cursor_y;
-    uint16_t color = textcolor;
-    uint16_t bg = textbgcolor;
     int8_t size = textsize;
 
     int8_t i, j;
@@ -341,20 +340,20 @@ void drawChar(uint8_t c){
             {
                 if (size == 1)
                 {
-                    drawPixel(x+i, y+j, color);
+                    drawPixel(x+i, y+j, foregroundColor);
                 }
                 else {
-                    fillRect(x+(i*size), y+(j*size), size, size, color);
+                    fillRect(x+(i*size), y+(j*size), size, size, foregroundColor);
                 }
-            } else if (bg != color)
+            } else if (backgroundColor != foregroundColor)
             {
                 if (size == 1)
                 {
-                    drawPixel(x+i, y+j, bg);
+                    drawPixel(x+i, y+j, backgroundColor);
                 }
                 else
             {
-                    fillRect(x+i*size, y+j*size, size, size, bg);
+                    fillRect(x+i*size, y+j*size, size, size, backgroundColor);
                 }
             }
 
@@ -429,20 +428,20 @@ void printByteHexadecimal(uint8_t d) {
 }
 
 void writeSomeLines(void){
-    textbgcolor = RED;
+    backgroundColor = RED;
     fillScreen();
     delay(20);
-    textbgcolor = GREEN;
+    backgroundColor = GREEN;
     fillScreen();
     delay(20);
     setRotation(0);
-    textbgcolor = BLACK;
+    backgroundColor = BLACK;
     fillScreen();
     testCircles(20, RED);
     delay(100);
     fillScreen();
     setTextSize(5);
-    setTextColor(CYAN, BLACK);
+    setForegroundColor(CYAN);
     print(intro1);
     setTextSize(3);
     print(intro2);
